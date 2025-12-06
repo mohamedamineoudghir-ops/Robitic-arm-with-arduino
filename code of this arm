@@ -1,0 +1,73 @@
+#include <Servo.h> 
+
+// تعريف كائنات السيرفو و ربطها بالمنافذ
+Servo baseServo;     // D9: القاعدة
+Servo shoulderServo; // D10: الكتف
+Servo elbowServo;    // D11: الكوع/المرفق (المحور الجديد)
+Servo gripperServo;  // D12: الماسك
+
+const int BASE_HOME = 90;
+const int SHOULDER_HOME = 120; 
+const int ELBOW_HOME = 70;
+const int GRIPPER_OPEN = 180;
+
+
+const int BASE_POS_A = 20;    
+const int SHOULDER_POS_A = 80; 
+const int ELBOW_POS_A = 100; 
+const int GRIPPER_CLOSE = 0;
+
+void setup() {
+  
+  baseServo.attach(9);
+  shoulderServo.attach(10);
+  elbowServo.attach(11);
+  gripperServo.attach(12);
+
+  baseServo.write(BASE_HOME);
+  shoulderServo.write(SHOULDER_HOME);
+  elbowServo.write(ELBOW_HOME);
+  gripperServo.write(GRIPPER_OPEN);
+  
+  Serial.begin(9600);
+  Serial.println("4 DOF Arm Automated Test Running!");
+}
+
+
+void loop() {
+  Serial.println("--- Starting Sequence ---");
+
+  
+  baseServo.write(BASE_HOME);
+  shoulderServo.write(SHOULDER_HOME);
+  elbowServo.write(ELBOW_HOME);
+  gripperServo.write(GRIPPER_OPEN);
+  delay(2000); 
+
+  Serial.println("Moving to Position A (Pick)");
+  
+
+  baseServo.write(BASE_POS_A);
+  shoulderServo.write(SHOULDER_POS_A);
+  elbowServo.write(ELBOW_POS_A);
+  delay(2000); 
+
+ 
+  Serial.println("Gripping object...");
+  gripperServo.write(GRIPPER_CLOSE);
+  delay(1500);
+
+ 
+  Serial.println("Lifting and Resetting...");
+  shoulderServo.write(SHOULDER_HOME); 
+  elbowServo.write(ELBOW_HOME); 
+  delay(1500);
+  
+  
+  Serial.println("Releasing object.");
+  gripperServo.write(GRIPPER_OPEN); 
+  delay(1000);
+
+ 
+  delay(3000); 
+}
